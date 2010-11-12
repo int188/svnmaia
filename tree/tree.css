@@ -1,0 +1,27 @@
+/* 子节点容器box需要缩进 */
+div.box {
+    margin-left:20px;
+}
+
+/* 目录节点标识样式 */
+span.folderMark {
+    font-family:"宋体";
+    color:#F00;
+    cursor:pointer;
+    margin-right:5px;
+}
+/* 目录节点样式 */
+span.folder {
+    cursor:pointer;
+}
+
+/* 非目录节点标识样式 */
+span.itemMark {
+    font-family:"宋体";
+    color:#F00;
+    margin-right:5px;
+}
+/* 非目录节点样式 */
+span.item {
+    cursor:pointer;
+}

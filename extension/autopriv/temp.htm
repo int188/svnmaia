@@ -1,0 +1,46 @@
+<style type='text/css'>
+ fieldset{border:2px solid #A4CDF2;padding:20px;background:#FFFFFF;width:60%}
+ legend{color:#1E7ACE;padding:3px 20px;border:1px solid #A4CDF2;background:#FFFFFF;}
+.st{margin-left:10px;line-height:30px;}
+.ft{background:#B6C6D6;text-align:center;margin:20px 0 20px 0;}
+#myexpire{display:none;border:1px solid #A2cd22;}
+</style>
+<h1>处理svn权限请求</h1>
+<script language="javascript">
+<!--
+function showexpire(sw)
+{
+	if(sw==1)
+	{
+		document.getElementById('myexpire').style.display='block';
+	}else
+	{
+		document.getElementById('myexpire').style.display='none';
+	}
+}
+
+	-->
+</script>
+<form name=regform action="" method="post">
+<fieldset>
+<legend>权限自动处理</legend>
+<div class='st'>
+&nbsp;&nbsp;&nbsp;Hi,zhuoran.xuzr 申请了<font color=red>http://svn.simba.taobao.com/svn/Apsara//branches</font>的<font color=red>只读</font>权限，请审慎处理：<br>&nbsp;
+<input type='hidden' name='u' value="xuejiang.li">
+<input type='hidden' name='ss' value="655094226">
+<input type='hidden' name='id' value="690">
+<input type='hidden' name='c' value="95b7daa2616fc086f743f6bd78bfda4e">
+<input type='hidden' name='flag' value='1'>
+<br><input type='radio' name='optype' value='agreed' id='diradmin' onclick='showexpire(1)'><label for='diradmin'>同意(完全同意所申请的url和权限，将自动处理)</label>
+<div id='myexpire'>&nbsp;有效期:<input type='radio' name='expire' value='none' checked>默认  <input type='radio' name='expire' value='7'>一周 <input type='radio' name='expire' value='30'>一个月 <input type='radio' name='expire' value='90'>三个月 <input type='radio' name='expire' value='other'>指定:<input type=text name='e'  size='3'>天</div>
+<br><input type='radio' name='optype' value='denied'  id='superadmin' onclick='showexpire(0)'><label for='superadmin'>拒绝</label>
+<br><input type='radio' name='optype' value='other' id='tolist' onclick='showexpire(0)'><label for='tolist'>手动处理（进入权限管理系统处理）</label>
+<br><br>回执给申请人:<input type=text name='email_back'  size='40'>
+</div>
+<div class='ft'>
+<input type='submit' value='确定提交'>
+</div>
+</fieldset>
+</form>
+
+

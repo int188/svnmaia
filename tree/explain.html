@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<title>动态树形列表基本原理演示</title>
+<style>
+/* 设置class属性为item的div缩进10px */
+div.item {
+    margin-left:10px;
+}
+</style>
+
+<script type="text/javascript">
+var counter = 1;                        //全局子项计数器
+
+//页面加载后立即执行的方法，在menu节点增加三个子项
+function init() {
+    var menu = document.getElementById("menu");
+    addChildren(menu);
+}
+
+//在传入的pNode节点内追加3个子项
+function addChildren(pNode) {
+    event.cancelBubble = true;          //阻止事件冒泡，避免父层div响应onclick事件
+    pNode.appendChild(createNewItem());
+    pNode.appendChild(createNewItem());
+    pNode.appendChild(createNewItem());
+}
+
+//创建新的子项
+function createNewItem() {
+    var _node = document.createElement("div");  //创建一个div节点
+
+    //给新建的div节点增加内容，并设置点击后调用addChildren函数
+    _node.innerHTML = "<div class='item' onclick='addChildren(this)'>item" + counter + "</div>";
+
+    counter++;  //计数器加1
+    return _node;
+}
+</script>
+</head>
+
+<body onload="init()">
+<div id="menu"></div>
+</body>
+</html>
