@@ -19,6 +19,8 @@ $url=$_GET['url'];
 </head>
 <style type='text/css'>
 div{margin:15px;}
+.tb1{ cellspacing:1; cellpadding:0; width:70%; border:0; background:#aaa}
+.tb1 tr{background:#ecf0e1;}
 fieldset{border:2px solid #A4CDF2;padding:20px;background:#DFE8F6;width:70%}
  legend{color:#AA0000;font-weight:bold;padding:3px 20px;border:2px solid #A4CDF2;}
 </style>
@@ -43,8 +45,33 @@ fieldset{border:2px solid #A4CDF2;padding:20px;background:#DFE8F6;width:70%}
 //列出当前用户的监控列表
 //*********
 $u_ID=$_SESSION['uid'];
-$query="select url,version from monitor_url,monitor_user where monitor_user.user_id=$u_ID";
+if (($_SESSION['role'] == 'admin'))
+{
+	$title="<h2>我的订阅/<a href='?s=all'>查看所有订阅</a></h2>";
+	if ('all'==$_GET['s'])
+	{
+		$para='1=1';
+		$title="<h2><a href=?reflash>我的订阅</a>/查看所有订阅</h2>";
+	}
+
+else{
+	$title="<h2>我的订阅</h2>";
+	$para="monitor_user.user_id=$u_ID";
+}
+	
+$query="select url,version,id from monitor_url,monitor_user where $para";
 $result=mysql_query($query);
+if($result)
+{
+	echo $title;
+	echo "<table class='tb1'>
+	<tr><td>svn地址</td><td>当前版本</td><td>操作</td>";
+}
+while (($result)and($row= mysql_fetch_array($result, MYSQL_BOTH))) {
+	$url=$row['url'];
+	$id=$row['id'];
+	$ver=$row['version'];
+	echo "<tr><td>$url</td><td>$ver</td><td><a href='monitor_modify.php?id=$id&action='del'>删除</a></td></tr>";
 ?>
 </body>
 
