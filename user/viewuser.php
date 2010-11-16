@@ -88,6 +88,7 @@ if($_SESSION['role'] != "admin")
 <br><a href="../priv/viewpriv.php?u={$_SESSION['uid']}">权限查询</a>
 <br>&nbsp;
 <h3>其他</h3>
+<br><a href='../extension/svn_monitor.php'>监控svn代码提交</a>
 SCMBBS;
 }
 if (!((isset($_SESSION['username']))and($_SESSION['role']=="admin"))){ 
