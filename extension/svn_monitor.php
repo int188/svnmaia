@@ -1,6 +1,8 @@
 <?php
 session_start();
 include('../include/charset.php');
+include('../../../config.inc');
+include('../include/dbconnect.php');
 if (!isset($_SESSION['username'])){	
 	echo "请先<a href='../user/loginfrm.php'>登录</a> ！";
 	echo" <script>setTimeout('document.location.href=\"../user/loginfrm.php\"',0)</script>"; 	
@@ -47,21 +49,22 @@ fieldset{border:2px solid #A4CDF2;padding:20px;background:#DFE8F6;width:70%}
 $u_ID=$_SESSION['uid'];
 if (($_SESSION['role'] == 'admin'))
 {
+	$para="monitor_user.user_id=$u_ID";
 	$title="<h2>我的订阅/<a href='?s=all'>查看所有订阅</a></h2>";
 	if ('all'==$_GET['s'])
 	{
 		$para='1=1';
 		$title="<h2><a href=?reflash>我的订阅</a>/查看所有订阅</h2>";
 	}
-
-else{
+}else{
 	$title="<h2>我的订阅</h2>";
 	$para="monitor_user.user_id=$u_ID";
 }
 	
 $query="select url,version,id from monitor_url,monitor_user where $para";
 $result=mysql_query($query);
-if($result)
+$num_rows = mysql_num_rows($result);
+if($num_rows > 0)
 {
 	echo $title;
 	echo "<table class='tb1'>
@@ -72,6 +75,7 @@ while (($result)and($row= mysql_fetch_array($result, MYSQL_BOTH))) {
 	$id=$row['id'];
 	$ver=$row['version'];
 	echo "<tr><td>$url</td><td>$ver</td><td><a href='monitor_modify.php?id=$id&action='del'>删除</a></td></tr>";
+}
 ?>
 </body>
 
@@ -91,14 +95,14 @@ function tCheck()
 	{
 		if (! confirm('此URL可能不存在或者为外部服务器的，您确实要添加此监控吗？'))return false;
 	}
-	if(firstflag && admin)document.getElementById('notelist').innerHTML ='';
+	if(firstflag && admin)document.getElementById('notelist').value ='';
 	urlform.submit();
 	return true;
 }
 function cleantip()
 {
 	if(firstflag){
-		document.getElementById('notelist').innerHTML ='';
+		document.getElementById('notelist').value ='';
 		firstflag=false;
 	}
 }

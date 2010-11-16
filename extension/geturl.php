@@ -19,9 +19,9 @@ function geturl($t_url)
 	  {
 		$ver=current($dirs_arr);
 		$ver=next($dirs_arr);
-		echo $ver;
-		list($ver,$ot)=splite(' ',$ver);
-		list($ot,$ver)=splite('r',$ver);
+	//	echo $ver;
+		list($ver,$ot)=explode(' ',$ver);
+		list($ot,$ver)=explode('r',$ver);
 		return $dir;
 	  }else
 	  {
@@ -29,13 +29,12 @@ function geturl($t_url)
 		  if($ret){
 			  $ver=current($info_arr);
 			  $ver=next($info_arr);
-			echo $ver;
-			list($ver,$ot)=splite(' ',$ver);
-			list($ot,$ver)=splite('r',$ver);
+	//		echo $ver;
+			list($ver,$ot)=explode(' ',$ver);
+			list($ot,$ver)=explode('r',$ver);
 	
 			  return $t_url;
 		  }else
 			 return false; 
 	  }
-	
 }
