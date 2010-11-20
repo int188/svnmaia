@@ -49,7 +49,26 @@ if (mysql_select_db(DBNAME))
 			{
 					$v=base64_encode($v);
 			}
-			if($para=='svnparentpath')$v=str_replace('\\','/',$v);
+			if($para=='svnparentpath')
+			{
+				$v=str_replace('\\','/',$v);
+				$sp = opendir( $v );
+				if( $sp ) {
+					$nodb=true;
+				        while( $dir = readdir( $sp ) ) {
+					   if ($dir == "." || $dir == "..")continue; 
+				           $svndir = $v . "/" . $dir;
+					   $svndbdir = $svndir . "/db";
+					   $svnhooksdir=$svndir ."/hooks";
+					   if( is_dir( $svndir ) && is_dir( $svndbdir ) && is_dir($svnhooksdir))
+					   {
+						   $nodb=false;
+						   break; 
+					   }
+					}
+					if($nodb)$err_svnpath="<span class='err'><strong>Error:</strong>$v 该目录下没找到任何svn库!试试填写上一级目录？</span>";
+				}
+			}
 			if($para=='use_smtp_authz')$flag=true;
 			if($para=='mail_method')
 			{
