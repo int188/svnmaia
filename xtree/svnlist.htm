@@ -1,0 +1,20 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset='utf-8'">
+<title>项目列表</title>
+<link rel="stylesheet" href="xtree.css" type="text/css" media="screen">
+<script type="text/javascript" src="xtree.js" language="JavaScript"></script>
+<script type="text/javascript" src="xmlextras.js" language="JavaScript"></script>
+<script type="text/javascript" src="xloadtree.js" language="JavaScript"></script>
+</head><body>
+<script type="text/javascript">
+//var tree = new WebFXTree("Root");
+//tree.setBehavior('explorer');
+var tree= new WebFXLoadTree('$','tree.php?parentId=0','../priv/dirpriv.php\" target=\"rt1','explorer');
+tree.setBehavior('explorer');
+//tree.setTarget('rt1');
+//tree.add(new WebFXTreeItem("test"));
+//tree.add(new WebFXLoadTreeItem("Tree Item 22", "tree.xml"));
+//tree.add(new WebFXTreeItem("Tree Item 3"));
+//tree.add(new WebFXLoadTreeItem("test"));
+document.write(tree);
+</script>

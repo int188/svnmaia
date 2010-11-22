@@ -1,0 +1,526 @@
+<script language="javascript">
+<!--
+var valueChanged=0;
+var clned=0;
+function adduser(divid,fromObj,toObj,myflag)
+{
+	if(document.getElementById(divid).style.display !="block")
+	{
+		document.getElementById(divid).style.display="block";
+		if(myflag=='')return false;
+	}
+	var canObj=document.privform.elements[fromObj];
+	var detObj=document.privform.elements[toObj];
+	var sel=false;
+	for(var i=0;i<canObj.length;i++)
+	{
+		if(canObj[i].value == '')continue;
+		while((canObj[i] != null)&&(canObj[i].selected)){			
+			createopt(canObj[i].innerHTML,canObj[i].value,null,detObj);
+			canObj.remove(i);
+			sel=true;
+			valueChanged=1;
+		}
+			
+	}
+	if(myflag==1)return false;
+	if(sel != true )alert('请在右边选择您要添加的用户！');
+
+}
+function deluser(fromObj,toObj)
+{
+	var canObj=document.privform.elements[fromObj];
+	var detObj=document.privform.elements[toObj];
+	for(var i=0;i<detObj.length;i++)
+	{
+		if(detObj[i].value == '')continue;
+		while((detObj[i] != null)&& (detObj[i].selected)){			
+			createopt(detObj[i].innerHTML,detObj[i].value,null,canObj);
+			detObj.remove(i);
+			valueChanged=1;
+		}
+			
+	}	
+}
+function createopt(str,optvalue,myid,grp)
+{
+  	var newopt1 = document.createElement('Option');
+   	newopt1.innerHTML=str;
+   	newopt1.value=optvalue;
+   	if(myid != null)newopt1.id= myid;
+   	grp.appendChild(newopt1);
+   	newopt1.selected="selected";
+   	return newopt1;
+}
+function rightset(str)
+{
+	var detObj=document.privform.elements['permission_detail[]'];
+	for(var i=0;i<detObj.length;i++)
+	{
+		if(detObj[i].selected){
+			if(detObj[i].value == '')continue;
+			valueChanged=1;
+		 	var ss=detObj[i].value.split(" ");	
+			detObj[i].value = str+' '+ss[1]+' '+ss[2];
+			document.privform.expire.value='';
+			setexpire()
+			if(str=='w'){
+				detObj[i].innerHTML='R W &nbsp;&nbsp; &nbsp; '+ss[1];
+			}else if(str=='r'){
+				detObj[i].innerHTML='R&nbsp; &nbsp; &nbsp; &nbsp; '+ss[1];
+			}else
+				detObj[i].innerHTML='none &nbsp; &nbsp; '+ss[1];
+
+		}
+	}
+
+}
+function grightset(str)
+{
+	var detObj=document.privform.elements['group_detail[]'];
+	for(var i=0;i<detObj.length;i++)
+	{
+		if(detObj[i].selected){
+			if(detObj[i].value == '')continue;
+			valueChanged=1;
+		 	var ss=detObj[i].value.split(" ");	
+			detObj[i].value = str+' '+ss[1]+' '+ss[2];
+			if(str=='w'){
+				detObj[i].innerHTML='R W &nbsp;&nbsp; &nbsp; '+ss[1];
+			}else if(str=='r'){
+				detObj[i].innerHTML='R&nbsp; &nbsp; &nbsp; &nbsp; '+ss[1];
+			}else
+				detObj[i].innerHTML='none &nbsp; &nbsp; '+ss[1];
+
+		}
+	}
+
+}
+function showgroup()
+{
+	var detObj=document.privform.elements['group_detail[]'];
+	for(var i=0;i<detObj.length;i++)
+	{
+		if(detObj[i].selected){
+			if(detObj[i].value == '')continue;
+		 	var ss=detObj[i].value.split(" ");	
+			var url="../user/viewgroup.php?gid="+ss[2]+"&grp="+ss[1]+"&fromurl=[Maiasvn:fromurl]";
+			setTimeout('document.location.href="'+url+'"',0);
+			break;
+		}
+	}
+}
+function showpriv()
+{
+	var detObj=document.privform.elements['permission_detail[]'];
+	var ss=detObj[detObj.selectedIndex].value.split(" ");
+	switch(ss[0]){
+	case 'n':
+		document.getElementById('setnone').checked='true';
+		break;
+	case 'w':
+		document.getElementById('setwrite').checked='true';
+		break;
+	case 'r':
+		document.getElementById('setread').checked='true';
+	}
+
+	var u='d_'+ss[2];
+	document.privform.expire.value='';
+	if(document.getElementById(u) == null)return 1;
+	d=document.getElementById(u).value;
+	document.privform.expire.value=d;
+
+}
+function setexpire()
+{
+	var d=document.privform.expire.value;
+	if(isNaN(d))return false;
+	var detObj=document.privform.elements['permission_detail[]'];
+	for(var i=0;i<detObj.length;i++)
+	{
+		if(detObj[i].selected){
+			if(detObj[i].value == '')continue;
+			var ss=detObj[i].value.split(" ");	
+			var eid='d_'+ss[2];
+			if(document.getElementById(eid)==null)
+			{
+				var newinput=document.createElement("input");
+				newinput.id=eid;
+				newinput.name=eid;
+				newinput.value=d;
+				newinput.type='hidden';
+				privform.appendChild(newinput);
+				valueChanged=1;
+				continue;
+			}
+			if(d == document.getElementById(eid).value)continue;
+			valueChanged=1
+			document.getElementById(eid).value=d;
+		}
+	}
+}
+
+function search(textObj,seln,t)
+{
+	var str=document.getElementById(textObj).value;
+	if(t == 1)
+	{
+		if(str.length < 3)return;
+	}
+	var desObj=document.privform.elements[seln];	
+	for(var i=0;i<desObj.length;i++)
+	{
+		if(desObj[i].value == '')continue
+		//var ss=desObj[i].value.split(" ");
+		var ss=	desObj[i].innerHTML;
+		if(ss.search(str)>=0){
+			desObj[i].style.display='';
+			desObj[i].selected="selected";
+		}else
+		{
+			desObj[i].style.display='none';
+			desObj[i].selected="";
+		}
+	}
+}
+function findout()
+{
+	var str=document.getElementById('search3').value;
+	var noadminObj=document.privform.elements['nomanager[]'];
+	for(var k=0;k<2;k++)
+	{
+	   if(k==0)
+	   {
+		   var desObj=document.privform.elements['permission_detail[]'];
+	   }if(k==1)
+	   {
+		var desObj=document.privform.elements['candidate[]'];	
+	   }
+	for(var i=0;i<desObj.length;i++)
+	{
+		if(desObj[i].value == '')continue;
+		var ss=	desObj[i].innerHTML;		
+		if(ss.search(str)>=0){
+			var u=desObj[i].value.split(" ");
+			createopt(u[1],u[1]+' '+u[2],null,noadminObj);
+		}
+	}
+	}
+}
+function closeit(e)
+{
+	if(valueChanged !=0)
+	{
+		if(window.event)
+		{
+	   		event.returnValue='数值已改变，是否放弃修改而离开？';
+	   	}else
+	   		 e.preventDefault();
+	}
+}
+function saveit(Obj)
+{
+	if(valueChanged ==0)return false;
+	valueChanged=0;
+	if(Obj=='det')
+	{
+		var detObj=document.privform.elements['permission_detail[]'];
+	        var detObj2=document.privform.elements['group_detail[]'];
+	
+		for(var i=0;i<detObj2.length;i++)
+   		{
+   			detObj2[i].selected = true;
+   			
+   		}
+	}
+	if(Obj=='admin')
+	{
+		var detObj=document.privform.elements['manager[]'];
+		document.getElementById('adminonly').value='true';
+	}
+	for(var i=0;i<detObj.length;i++)
+   	{
+   		detObj[i].selected = true;
+   			
+   	}
+	privform.submit();
+	return true;
+}
+function showreadme(myid)
+{
+	if(document.getElementById(myid).style.display=="none")
+	  document.getElementById(myid).style.display ='block'
+	else
+	  document.getElementById(myid).style.display = "none";
+}
+function privcopy()
+{
+	if(document.getElementById('fromdir').value =='')return false;
+	privform.submit();
+}
+function closeopen(toclose,toopen)
+{
+	document.getElementById(toopen).style.display="block";
+	document.getElementById(toclose).style.display="none";
+}
+function searchuser(textObj,seln,myflag)
+{
+	var str=textObj;
+	var desObj=document.privform.elements[seln];	
+	for(var i=0;i<desObj.length;i++)
+	{
+		if(myflag==1)
+		{
+			desObj[i].selected='';
+			continue;
+		}
+		if(desObj[i].value == '')continue
+		var ss=	desObj[i].innerHTML;
+		if(ss.search(str)>=0){
+			desObj[i].selected="selected";
+			return true;
+		}
+	}
+}
+function batchadd()
+{
+	var str=document.getElementById('batchinput').value;
+	var founduser = false;
+	ss=str.split(/[;, \n\r]/);
+	searchuser('','candidate[]',1);
+	for(var i=0;i<ss.length;i++)
+	{
+		if(ss[i] == '')continue;
+		if (searchuser(ss[i],'candidate[]',''))
+		{
+			str=str.replace(ss[i] ,'');
+			founduser = true;
+		}
+	}
+	document.getElementById('batchinput').value=str;
+	adduser('rtdiv','candidate[]','permission_detail[]',1);
+	if(! founduser)alert('这些用户不存在，请确认输入是否正确！');
+}
+function cleartip()
+{
+	if (clned != 0)return 0;
+	clned=1;
+	document.getElementById('batchinput').value='';
+	document.getElementById('batchinput').style.background="yellow"
+
+}
+function editDescription()
+{
+	document.getElementById('new-ds').value=document.getElementById('descript').innerHTML;
+	document.getElementById('descript').style.display='none';
+	document.getElementById('editpan').style.display='none';
+	document.getElementById('ds-form').style.display='inline';	
+	document.getElementById('new-ds').focus();
+}
+function closedes()
+{
+	document.getElementById('descript').style.display='';
+	document.getElementById('editpan').style.display='';
+	document.getElementById('ds-form').style.display='none';	
+}
+
+//用于创建XMLHttpRequest对象
+function createXmlHttp() {
+    //根据window.XMLHttpRequest对象是否存在使用不同的创建方式
+    if (window.XMLHttpRequest) {
+       xmlHttp = new XMLHttpRequest();                  //FireFox、Opera等浏览器支持的创建方式
+    } else {
+       xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");//IE浏览器支持的创建方式
+    }
+}
+//从服务器加载关键词的详细信息
+function sendDes() {
+   var neirong="newdescript="+ds_form.newdescript.value
+      +"&repos="+ds_form.repos.value
+      +"&path="+ds_form.path.value
+      +"&sig="+ds_form.sig.value;
+    createXmlHttp();                                //创建XMLHttpRequest对象
+    xmlHttp.onreadystatechange = loadTipCallBack;   //设置回调函数
+    xmlHttp.open("POST", "./editDescription.php", true);
+    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xmlHttp.send(neirong);
+}
+
+//获取查询选项的回调函数
+function loadTipCallBack() {
+    if (xmlHttp.readyState == 4) {
+	if(xmlHttp.responseText=="successful"){
+		document.getElementById('descript').innerHTML=document.getElementById('new-ds').value;
+		closedes();        
+	}
+    }
+}
+-->
+</script>
+<style type='text/css'>
+.fset{border:2px solid #A4CDF2;padding:10px;background:#FFFFFF;width:120px}
+.rt, .rt2{float:left;display:none;z-index:0;border:2px solid #a4cdf3;}
+.ct,.ct2{[Maiasvn:authz]}
+.tp{text-align:right;}
+.lf,.ct2,.rt2{float:left;margin:10px;}
+.ds1{font-weight:bold;font-size:14px}
+.subBtn{width:100px;height:47px; }
+.sbar{width:100px}
+.detsl{background:#fff4bc;}
+.cansl{background:#ece9d8;}
+.sf{position:absolute;}
+.es { font-size: 55%;}
+.sf,.af{text-decoration:underline;color:blue;font-size:10pt;CURSOR:pointer;}	
+.tip{display:none;width:300px;text-decoration:none;color:green;font-size:11pt;background:#FFFFCC;position:absolute;z-index:12; }
+</style>
+
+<body onbeforeunload="closeit(event)">
+<div class='lf ds1'>
+  <label>说明:</label><label id="descript">[Maiasvn:description]</label><a href='#' onclick="editDescription(event)" id='editpan' role=button style="[Maiasvn:authz]"><img src='../img/edit.png' border=0></a>
+  <form id='ds-form' name='ds_form' style="display:none;">
+	<input type="text" name="newdescript" id='new-ds' style="min-width: 186px; width: 527px;"/>
+        <div class="buttons" style="display: inline;">
+		<input type="button" value="  OK  " onclick="sendDes();"/>
+		<input type="button" value="Cancel" onclick="closedes(event)"/>
+		<input type='hidden' name='repos' value='[Maiasvn:repos]'>
+		<input type='hidden' name='path' value='[Maiasvn:path]'>
+		<input type='hidden' name='sig' value='[Maiasvn:sig]'>
+	</div>
+  </form>
+</div>
+<div class='tp'>
+			<a class='abtn' href='../priv/gen_access.php' ><img src='../img/button.gif' border='0'></a>
+</div>
+
+<form method='get' action='' style="clear:both;">
+<fieldset>
+<legend>快速查看权限</legend>
+<input type=hidden name='from_d' value='true'>
+<label for='myurl'>输入url：</lable><input type=text id='myurl' name='d' style="width:480;">
+	<input type=submit value='提交'>&nbsp;&nbsp;<font class=sf  onclick="showreadme('urlchop')">svn父目录URL:<span id='urlchop' class='tip' ><b>说明：</b><a href='../config/index.php'>指定svn父目录URL</a>，如你的svn库mysvn1所在url是：http://example.com/repos/mysvn1，则url父目录应为http://example.com/repos
+		   </span></font>
+</fieldset>
+</form>
+<h1>[Maiasvn:dir] 目录权限详情<a class='es' href='../priv/platpriv.php'>【递归列出】</a></h1>
+
+<form name='privform' method='post' action='modifypriv.php'>
+	<fieldset>
+		<br>
+		<table border=0 ><tr valign='top'><td>
+<div >
+	<input type='text' id='search1' class='sbar' onkeyup="search('search1','permission_detail[]',1)"/><input type='button' value='定位用户' onclick="search('search1','permission_detail[]',2)"><br>
+<select name="permission_detail[]" MULTIPLE size=23 class='detsl' onchange="showpriv()"><option value='' >-权限----用户名-------</option>
+	[Maiasvn:dirprive]
+</select>
+</div>
+</td><td>
+<div class='ct'>
+	<br><br>
+	<p><input type='button' value='<< add user' onclick="adduser('rtdiv','candidate[]','permission_detail[]','')"></p>
+	<p><input type='button' value='>> del user' onclick="deluser('candidate[]','permission_detail[]')"></p>
+	<p><input type='button' value='提交保存' class='subBtn' onclick="saveit('det')"></p>
+<div style="[Maiasvn:authz]">
+<fieldset class='fset'>
+<legend>用户权限</legend>
+<input type='radio' name='setright'  id='setwrite' onclick="rightset('w')"/><label for='setwrite'>写权限 </label>
+<br><input type='radio' name='setright'  id='setread' onclick="rightset('r')"/><label for='setread'>读权限 </label>
+<br><input type='radio' name='setright'  id='setnone' onclick="rightset('n')"/><label for='setnone'>无权限 </label>
+</fieldset>
+<p>有效期:<input type='text' style="width:40" name='expire' maxlength=4 onkeyup='setexpire()'>天
+&nbsp;&nbsp;<font class=sf onmouseover="showreadme('readmetip')">说明<span id='readmetip' class='tip' style='display:none'><b>说明：</b>如果为空，则有效期为系统默认有效期。
+ </span></font>
+ </p>
+</div>
+</div>
+</td><td>
+<div class='rt' id='rtdiv'>
+	<img src='../img/close.bmp' ALT='close' style='float:right;' onclick="document.getElementById('rtdiv').style.display='none'">
+	<div style='float:left'>
+	<input type='text' id='search2' class='sbar' onkeyup="search('search2','candidate[]',1)"/><input type='button' value='定位用户' onclick="search('search2','candidate[]',2)"><br>
+<select name="candidate[]" MULTIPLE size=23 class='cansl' onDblclick="adduser('rtdiv','candidate[]','permission_detail[]','')"><option value='' label='--请选择--'>-权限----候选用户列表--</option>
+[Maiasvn:candidate]
+</select>
+</div>
+<div style='float:right;line-height:30px;'>
+&nbsp;&nbsp;<a href='#' onclick="closeopen('rtdiv','batchdiv')">批量添加用户</a>
+	<fieldset>
+		<legend>复制目录权限</legend>
+	<p>从目录：
+	<br><input type='text' name='fromdir' id='fromdir'>
+	<br><button type=button onclick='privcopy()'>复制权限</button>至当前目录</p>
+	</fieldset>
+</div>
+</div>
+<div class='rt' id='batchdiv'>
+	<img src='../img/close.bmp' ALT='close' style='float:right;' onclick="closeopen('batchdiv','rtdiv')">
+	<textarea id='batchinput' rows=13 cols=24 onfocus="cleartip()">提示：多用户名之间请用分号';'或','或空格' '进行分割。</textarea>
+	<button type=button onclick='batchadd()'>添加</button>
+</div>
+</td></tr></table>
+</fieldset>
+<input type='hidden' name='repos' value='[Maiasvn:repos]'>
+<input type='hidden' name='path' value='[Maiasvn:path]'>
+<input type='hidden' name='sig' value='[Maiasvn:sig]'>
+<!-- =================================================   -->
+<!-- =============================================== -->
+<h3>权限组</h3>
+	<table border=0 ><tr valign='top'><td>
+<div class='lf'>
+<select name="group_detail[]" MULTIPLE size=13 class='detsl' onDblclick="showgroup()" ><option value='' >-权限----组名-------</option>
+	[Maiasvn:g_dirprive]
+</select>
+<p align='right'><a class=af onclick="showgroup()">组详情</a></p>
+</div>
+</td><td>
+<div class='ct'>
+	<p><input type='button' value='<< add group' onclick="adduser('g_rtdiv','g_candidate[]','group_detail[]','')"></p>
+	<p><input type='button' value='>> del group' onclick="deluser('g_candidate[]','group_detail[]')"></p>
+	<p><input type='button' value='提交保存' class='subBtn' onclick="saveit('det')"></p>
+  <fieldset class='fset'>
+  <legend>组权限</legend>
+  <input type='radio' name='gsetright'  id='g_setwrite' onclick="grightset('w')"/><label for='g_setwrite'>写权限 </label>
+  <br><input type='radio' name='gsetright'  id='g_setread' onclick="grightset('r')"/><label for='g_setread'>读权限 </label>
+  <br><input type='radio' name='gsetright'  id='g_setnone' onclick="grightset('n')"/><label for='g_setnone'>无权限 </label>
+  </fieldset>
+</div>
+</td><td>
+<div class='rt' id='g_rtdiv'>
+	<img src='../img/close.bmp' ALT='close' style='float:right;' onclick="document.getElementById('g_rtdiv').style.display='none'">
+	<div style='float:left'>
+	<input type='text' id='g_search2' class='sbar' onkeyup="search('g_search2','g_candidate[]',1)"/><input type='button' value='定位组' onclick="search('g_search2','g_candidate[]',2)"><br>
+<select name="g_candidate[]" MULTIPLE size=13 onDblclick="adduser('g_rtdiv','g_candidate[]','group_detail[]','')" class='cansl'><option value='' label='--请选择--'>-权限----候选组列表--</option>
+[Maiasvn:g_candidate]
+ </select>
+  <a href="../user/viewgroup.php#addgroup">创建新组</a>
+         </div>
+ </div>
+ </td></tr></table>
+<!-- =================================================   -->
+<!-- =================================================   -->
+<h2>[Maiasvn:dir]目录管理员</h2>
+	<fieldset>
+<div class='lf'>
+<br>
+<select name="manager[]" MULTIPLE size=10 class='detsl' ><option value=''>-目录管理员列表-</option>
+	[Maiasvn:diradmin]
+</select>
+<input type='hidden' name='adminonly' id='adminonly' value=''>
+</div>
+<div class='ct2'>
+	<br>
+	<p><input type='button' value='<< 添加管理员' onclick="adduser('rtdiv2','nomanager[]','manager[]','')"></p>
+	<p><input type='button' value='>> 删除管理员' onclick="deluser('nomanager[]','manager[]')"></p>
+	<p><input type='button' value='提交保存' class='subBtn' onclick="saveit('admin')"></p>
+</div>
+<div class='rt2' id='rtdiv2'>
+	<br>
+	<input type='text' id='search3' class='sbar'><input type='button' value='查找' onclick="findout()"><br>
+<select name="nomanager[]" MULTIPLE size=8 class='cansl'><option value=''>-----查询结果----</option>
+</select>
+</div>
+	[Maiasvn:dexpire]
+	</fieldset>
+</form>
+</body>
+</html>

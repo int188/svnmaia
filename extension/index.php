@@ -32,6 +32,7 @@ br{clear:both;}
  <div class='st'>
  <a href='../scheme/scheme.php' target='_blank'>启动任务计划设置</a>
  <br><a href='../scheme/cleanuser.php'>发起用户清理计划</a>
+<br><a href='../scheme/monitor.php' target='_blank'>启动代码监控任务</a>
  </div>
  <h3>初始化</h3>
  <div class='st'>

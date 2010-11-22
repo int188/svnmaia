@@ -72,15 +72,17 @@ $error=mysql_query();
 echo $error;
 $nameflag=true;
 $u_ID=$_SESSION['uid'];
+$_POST['pattern']=trim($_POST['pattern']);
+$pattern=str_replace('*','.*',str_replace('.','\.',str_replace(' ','|',$_POST['pattern'])));	
+$pattern=safe($pattern);
 if (($_SESSION['role'] == 'admin')or($_SESSION['role'] == 'diradmin')){
-	
 	$usrArray=preg_split('/[;, ]/',$_POST['notelist']);
 	foreach($usrArray as $i=>$e)
 	{
 		if(empty($e))continue;
 		list($u,$ot)=splite('@',$e);
 		$u=safe($u);
-		$query="insert into monitor_user (monitor_id,user_id) select monitor_url.monitor_id,svnauth_user.user_id from svnauth_user,monitor_url where svnauth_user.user_name=$u and monitor_url.url=$wurl;";
+		$query="insert into monitor_user (pattern,monitor_id,user_id) select $pattern,monitor_url.monitor_id,svnauth_user.user_id from svnauth_user,monitor_url where svnauth_user.user_name=$u and monitor_url.url=$wurl;";
 			//	echo $query;
 		mysql_query($query);
 		$error=mysql_error();
@@ -105,16 +107,22 @@ if (($_SESSION['role'] == 'admin')or($_SESSION['role'] == 'diradmin')){
 	}
 	if($nameflag)
 	{		
-		$query="insert into monitor_user (monitor_id,user_id) select monitor_url.monitor_id,$u_ID from monitor_url where monitor_url.url=$wurl;";
+		$query="insert into monitor_user (pattern,monitor_id,user_id) select $pattern,monitor_url.monitor_id,$u_ID from monitor_url where monitor_url.url=$wurl;";
 		mysql_query($query);
 		$error=mysql_error();
 	}
 }else{
-	$query="insert into monitor_user (monitor_id,user_id) select monitor_url.monitor_id,$u_ID from monitor_url where monitor_url.url=$wurl;";
+	$query="insert into monitor_user (pattern,monitor_id,user_id) select $pattern,monitor_url.monitor_id,$u_ID from monitor_url where monitor_url.url=$wurl;";
 	mysql_query($query);
 	$error=mysql_error();	
 }
 echo $error;
+$pos=strpos($error,"Duplicate entry");
+if($pos !== false)
+{
+	echo "<script>alert('该url监控已在，不能重复添加！')</script>";
+	echo " <script>setTimeout('document.location.href=\"svn_monitor.php\"',5)</script>";
+}
 //***
 //如果用户没有email信息，引导其填写email。
 //***
@@ -123,6 +131,7 @@ $result=mysql_query($query);
 $num_rows = mysql_num_rows($result);
 if($num_rows > 0)
 {
+	echo "<br>订阅成功！";
 	echo "<script>alert('你的邮件地址为空，请完善你的邮件地址及个人信息！')</script>";
 	$url="../user/user_modify.php?userArray[]=${u_ID}&action=编辑";
 	echo" <script>setTimeout('document.location.href=\"$url\"',0)</script>";  	

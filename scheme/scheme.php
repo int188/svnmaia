@@ -13,7 +13,7 @@ include('../include/charset.php');
 <br>&lt;script src="<?php echo $_SERVER['PHP_SELF'] ?>"&gt;&lt;/script&gt;
 <br> 其中src="**"语句指明了本页面的url位置。 这样，当有人访问该页面时就会自动运行本清理脚本。
 <br><strong>Linux系统</strong>：在crontab中添加一行：
-<br>  0 0 * * * "wget --delete-after <?php echo $_SERVER['SERVER_NAME']$_SERVER['PHP_SELF'] ?>"
+<br>  0 0 * * * "wget --delete-after http://<?php echo $_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']; ?>"
 <br><strong>Windows系统</strong>:在计划任务中：
 打开“控制面板”-->双击“计划任务”-->添加新任务-->选择运行程序中，点击浏览，在弹出对话框中，输入本页面的url
 如：http://www.example.com/svnauth/scheme/scheme.php，然后一直点下一步，直到完成。

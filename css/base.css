@@ -1,0 +1,26 @@
+#tipDiv {
+    border:1px solid black;
+    background:#FFFFCC;
+    padding:5px;    
+    font-size:10pt;
+    
+}
+#tipDiv:hover{
+  display:block;
+}
+#tipDiv a{color:blue;TEXT-DECORATION:underline;font-size:9pt;}
+
+/* 关键词的样式 */
+span.keyword {
+    border-bottom:1px dotted #FF0000;
+    font-weight:bold;
+}
+h1, h2, h3, h4, h5, h6 {
+	color: #AA0000;
+	background: none;
+	margin: 0;
+	padding-top: .5em;
+	padding-bottom: .17em;
+	border-bottom: 1px solid #aaa;
+}
+h3 { font-size: 100%;background-color:#edf5f7;border-color:#E2DCC8;}

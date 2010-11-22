@@ -1,7 +1,8 @@
 Version 2.2.4
 1、程序编码由gb2312改为UTF-8（升级后中文姓名等信息可能会乱码，请下载此链接工具进行中文转码： http://svnmaia.googlecode.com/svn/updates/tools/encode)
    升级说明：svn export此链接到svnMaia目录，在浏览器访问http://***/svnMaia/encode/gbk2utf8.php，完成中文转码（请勿运行多次，否则中文姓名等信息会被损坏）。
-
+2、【新增】svn代码监控功能，用户可在系统中对代码变更进行订阅（注：需要启动[工具]->[启动代码监控任务])。
+3、保存【配置】时，加强对svn库路径的检查。
 
 
 Version 2.2.3
