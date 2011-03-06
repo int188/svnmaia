@@ -25,7 +25,7 @@ include('../../../config.inc');
 include('../include/basefunction.php');
 function safe($str)
 { 
-//	$str=htmlspecialchars($str,ENT_QUOTES);
+	$str=htmlspecialchars($str,ENT_QUOTES);
 	return "'".mysql_real_escape_string($str)."'";
 }
 include('../include/dbconnect.php');

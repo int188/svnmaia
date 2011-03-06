@@ -13,7 +13,7 @@ include('../../include/dbconnect.php');
 function checkurl($t_url)
 {
 	global $svnparentpath,$svn;
-	if($t_url=='')return true;
+//	if($t_url=='')return true; // 允许申请根目录权限
 	if(strpos($t_url,':'))return false;
 //中文目录判断有问题
 //	if(isset($_GET['from_d']))

@@ -98,7 +98,7 @@ function addemail()
 
    if( ! isPassword( regform.passwd.value ) )
    {
-        alert("\请重新输入密码,密码由至少6个英文字母或数字组成 !"); 
+	 alert("\密码过于简单,密码由至少6个英文字母和数字/符号组成 !"); 
         regform.passwd.select();
         regform.passwd.focus();
         return false;
@@ -124,7 +124,9 @@ function addemail()
   }
 function isPassword( password )
   {
-     return /^[\w\W]{6,20}$/.test( password );
+      if(password.search(regform.username.value)>=0 ||/^hello1234$/i.test(password))return false;
+      if(password.length < 6||!/[0-9\W]+/.test(password)||!/[a-zA-Z]+/.test(password))return false;
+      return true;
   }
   return true;
 }  

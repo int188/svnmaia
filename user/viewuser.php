@@ -52,7 +52,7 @@ include('../include/dbconnect.php');
 if(! empty($_GET['username'])){
   $un=mysql_real_escape_string($_GET['username']);
   if(empty($un))$un='no_such_user';
-  $query='select user_id,user_name,full_name,staff_no,department,email from svnauth_user where user_name like \'%'.$un.'%\' or full_name like \'%'.$un.'%\'';
+  $query='select user_id,user_name,full_name,staff_no,department,email,fresh from svnauth_user where user_name like \'%'.$un.'%\' or full_name like \'%'.$un.'%\'';
   $result=mysql_query($query);
   echo "<table class='tb1'>";
   $found=false;
@@ -63,10 +63,19 @@ if(! empty($_GET['username'])){
 		$staff_no=$row['staff_no'];
 		$email=$row['email'];
 		$department=$row['department'];
+		$status=$row['fresh'];
+		if(1==$status)
+		{
+			$st='解冻';
+		}else
+		{
+			$st='冻结';
+		}
 		$str='';
 		$found=true;
 		if ($_SESSION['role']=="admin")
 		  $str="<td><a href='user_modify.php?userArray[]={$user_id}&action=删除' onclick=\"return confirm('确实要删除用户吗?');\">删除</a></td>
+		<td><a href='user_modify.php?userArray[]={$user_id}&action={$st}' onclick=\"return confirm('确实要{$st}用户吗?');\">{$st}</a></td>
 		  <td><a href='user_modify.php?userArray[]={$user_id}&action=编辑'>编辑</a></td><td><a href=\"../priv/viewpriv.php?u=$user_id\" onmouseover=\"showTip('$user_id',this);\" onmouseout=\"hideTip()\">权限详情</a></td>";
 		if($_SESSION['username']==$user_name)$str="<td><a href='user_modify.php?userArray[]=myself&action=编辑'>编辑</a></td><td><a href=\"../priv/viewpriv.php?u=$user_id\" onmouseover=\"showTip('$user_id',this);\" onmouseout=\"hideTip()\">权限详情</a></td>";
 		echo "<tr><td>$user_name</td><td>$full_name</td><td>$staff_no</td><td>$department</td><td>$email</td>$str</tr>";
@@ -209,6 +218,7 @@ if(!is_numeric($page))
 	   <tr>
 	  <td width="40"></td>
 		<td><input name="action" type=submit value="删除" onclick="return confirm('确实要删除这些用户吗?');"></td>
+		<td><input name="action" type=submit value="冻结" onclick="return confirm('被冻结用户将不能访问svn');"></td>
 		<td width=160><input name="action" type=submit value="编辑"></td>
 		<td width=160><input name="action" type=submit value="重置密码"></td>		
 		<td width=160><input name="action" type=submit value="设为超级用户"></td>
@@ -248,6 +258,7 @@ $i=0;
 	   <tr class='subtitle'>
 	  <td width="40"></td>
 		<td><input name="action" type=submit value="删除" onclick="return confirm('确实要删除这些用户吗?');"></td>
+		<td><input name="action" type=submit value="冻结" onclick="return confirm('被冻结用户将不能访问svn');"></td>
 		<td width=160><input name="action" type=submit value="编辑"></td>
 		<td width=160><input name="action" type=submit value="重置密码"></td>		
 		<td width=160><input name="action" type=submit value="设为超级用户"></td>

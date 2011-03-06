@@ -1,4 +1,5 @@
 <?php
+include('../include/charset.php');
 include('../config/config.php');
 include('../../../config.inc');
 include('../include/dbconnect.php');
@@ -25,6 +26,13 @@ if ($passwd != $passwd0)
   echo " <a href='javascript:history.back()'>点击这里返回</a>";
   echo "<script>history.go(-1);</script>";
   exit;
+}
+if(isSamplePassword($passwd,$usr))
+{
+		echo "<script>window.alert(\"密码过于简单,密码由至少6个英文字母和数字/符号组成，且不能包含用户名。\")</script>";
+		echo " <a href='javascript:history.back()'>点击这里返回</a>";
+		echo "<script>history.go(-1);</script>";
+		exit;
 }
 
 //SQL查询语句;

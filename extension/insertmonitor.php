@@ -80,7 +80,7 @@ if (($_SESSION['role'] == 'admin')or($_SESSION['role'] == 'diradmin')){
 	foreach($usrArray as $i=>$e)
 	{
 		if(empty($e))continue;
-		list($u,$ot)=splite('@',$e);
+		list($u,$ot)=explode('@',$e);
 		$u=safe($u);
 		$query="insert into monitor_user (pattern,monitor_id,user_id) select $pattern,monitor_url.monitor_id,svnauth_user.user_id from svnauth_user,monitor_url where svnauth_user.user_name=$u and monitor_url.url=$wurl;";
 			//	echo $query;

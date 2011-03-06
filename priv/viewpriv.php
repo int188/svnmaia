@@ -88,6 +88,12 @@ echo <<<HTML
 </style>
 HTML;
 echo $uinfo;
+$query="select fresh from svnauth_user where user_id=$user_id and fresh=1";
+$result=mysql_query($query);
+if(($result) and($row= mysql_fetch_array($result, MYSQL_BOTH))) {
+	$stat=$row['fresh'];
+	if(!empty($stat))echo"<b><font color=red>此用户已被冻结，所列权限不生效！</font></b>";
+}
 echo "<table><tr><th>路径</th><th>权限</th><th>$str</th></tr>";
 while (($result)and($row= mysql_fetch_array($result, MYSQL_BOTH))) {
 	$repos=$row['repository'];

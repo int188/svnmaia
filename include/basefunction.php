@@ -138,4 +138,14 @@ function checkUserGroup($str)
 	}else
 		return false;
 }
+function isSamplePassword($password,$username=null)
+{
+        if(strpos($password,$username) !== false)return true;
+        if (strlen($password)<6) return true;
+        if(preg_match('/^hello1234$/i',$password))return true;
+        if(!preg_match('/[0-9\W]+/',$password)||!preg_match('/[a-zA-Z]+/',$password))return true;
+        return false;
+       
+}
+
 ?>

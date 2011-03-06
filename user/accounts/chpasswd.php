@@ -27,13 +27,20 @@ if(strcasecmp(urlencode($sig0),trim($sig))!=0)
 $mlink=mysql_connect(SERVER,USERNAME2,PASSWORD2) or die("数据库链接失败！请联系管理员");
 mysql_select_db(DBNAME) or die("不能选择数据库！");
 
-if (($newpasswd != $newpasswd1)or(strlen($newpasswd)<6))  
+if ($newpasswd != $newpasswd1)  
 { echo " <script>window.alert(\"两次输入的密码不一致，请重新输入!\")</script>";
    echo " <a href='javascript:history.back()'>点击这里返回</a>";
    echo " <script>setTimeout('document.location.href=\"javascript:history.go(-1)\"',5)</script>
       ";
    exit;
 } 
+if(isSamplePassword($newpasswd,$user))
+{
+		echo "<script>window.alert(\"密码过于简单,密码由至少6个英文字母和数字/符号组成，且不能包含用户名。\")</script>";
+		echo " <a href='javascript:history.back()'>点击这里返回</a>";
+		echo " <script>setTimeout('document.location.href=\"javascript:history.go(-1)\"',5)</script>";
+		exit;
+}
 include('../../config/config.php');
 $pwdpath=$passwdfile;
 $cmdpath=$htpasswd;

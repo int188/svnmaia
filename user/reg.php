@@ -32,6 +32,10 @@ $fullname=trim($_POST['fullname']);
 $staff_no=$_POST['staff_no'];
 $department=$_POST['department'];
 $email=$_POST['email'];
+if(!empty($_POST['randompwd']))
+{
+	$passwd=$passwd0=rand().rand();
+}
 if($email=="")$email=$username.$email_ext;
 if(($passwd == "")||($username =="")||($fullname ==""))
 {
@@ -42,6 +46,14 @@ if ($passwd != $passwd0)
 { echo " 两次输入的密码不一致，请重新输入!";
  
   exit;
+}
+if(empty($_POST['randompwd']))
+{
+	if(isSamplePassword($passwd,$username))
+	{
+		echo "密码过于简单,密码由至少6个英文字母和数字/符号组成，且不能包含用户名。";
+		exit;
+	}
 }
 //$passwd= system($htpasswd.' -m -b -n '.escapeshellarg($usr).' '.escapeshellarg($passwd));
 //list($ot,$passwd)=explode(':',$passwd);

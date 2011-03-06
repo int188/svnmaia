@@ -54,6 +54,42 @@ if (mysql_select_db(DBNAME))
 		//header("Cache-Control: no-cache");
 		//echo "<script>window.history.back();</script>";
 	}
+	if($action == '冻结')
+	{
+		if ($_SESSION['role']!='admin'){
+			echo "You are not allowed to access this file!";
+			echo "    <script>setTimeout('document.location.href=\"javascript:history.back()\"',3)</script>
+		            ";
+			exit;
+		}
+			
+		$query="update svnauth_user set fresh=1 where $paras";
+		//echo $query;exit;
+		$result=mysql_query($query);	
+		@include('./gen_passwd.php');
+		@include('../priv/gen_access.php');
+		echo " <script>setTimeout('top.location.href=\"../default.htm\"',0)</script>";
+		//header("Cache-Control: no-cache");
+		//echo "<script>window.history.back();</script>";
+	}
+	if($action == '解冻')
+	{
+		if ($_SESSION['role']!='admin'){
+			echo "You are not allowed to access this file!";
+			echo "    <script>setTimeout('document.location.href=\"javascript:history.back()\"',3)</script>
+		            ";
+			exit;
+		}
+			
+		$query="update svnauth_user set fresh=0 where $paras";
+		//echo $query;exit;
+		$result=mysql_query($query);	
+		@include('./gen_passwd.php');
+		@include('../priv/gen_access.php');
+		echo " <script>setTimeout('top.location.href=\"../default.htm\"',0)</script>";
+		//header("Cache-Control: no-cache");
+		//echo "<script>window.history.back();</script>";
+	}
 	if($action == '设为超级用户')
 	{
 		if ($_SESSION['role']!='admin'){
@@ -179,7 +215,7 @@ HTML;
 	echo <<<HTML
 		<form method="post" action="">
 		<fieldset>
-		<legend>复制组</legend>
+		<legend>复制用户权限</legend>
 		<input type=hidden name=action value='copyuserpriv'>
 说明：复制成员的权限到其他用户，可选择追加还是覆盖。
 		<table  cellspacing='1' cellpadding='0' width='70%' border='0' >
@@ -203,6 +239,50 @@ HTML;
 	</table>
 		</fieldset></form>
 HTML;
+	}
+	if($action == 'copyuserpriv')
+	{
+		$gid=safe($_POST['userArray']);
+		if(empty($_POST['username']))
+		{
+			echo "输入不能为空";
+			exit;
+		}
+		$uname=safe($_POST['username']);
+		if(!is_numeric($_POST['userArray']))exit;
+		$query="select user_id from svnauth_user where user_name=$uname";
+		$result=mysql_query($query);
+		if(($result) and($row= mysql_fetch_array($result, MYSQL_BOTH))) {
+			$togroupid=$row['user_id'];
+		}else
+		{
+			echo "用户名不存在，请确认输入是否正确！";
+			exit;
+		}
+		$data_c=false
+		if($_POST['copym'] == 'cpm')
+		{
+		
+			$query="insert into svnauth_permission (user_id,repository,path,permission) select '$togroupid',repository,path,permission from svnauth_permission where user_id=$gid";
+			mysql_query($query);
+			$data_c=true;
+			echo mysql_error();
+		}
+		if($_POST['copypriv'] == 'cpp')
+		{
+		
+			$query="delete from svnauth_permission where user_id=$togroupid";
+			mysql_query($query);
+			$query="insert into svnauth_permission (user_id,repository,path,permission) select '$togroupid',repository,path,permission from svnauth_permission where user_id=$gid";
+			mysql_query($query);
+			$data_c=true;
+			echo mysql_error();
+		}
+		if($data_c)
+		{
+			@include('../priv/gen_access.php');
+		}
+		
 	}
 
 	if($action == 'modify')

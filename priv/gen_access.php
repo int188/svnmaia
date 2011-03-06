@@ -10,7 +10,7 @@ $access_g='';
 while (($result)and($row= mysql_fetch_array($result, MYSQL_BOTH))) {	
 	$gid=$row['group_id'];
 	$gname=$row['group_name'];
-	$sql="select user_name from svnauth_groupuser,svnauth_user where svnauth_user.user_id=svnauth_groupuser.user_id and group_id=$gid group by user_name";
+	$sql="select user_name from svnauth_groupuser,svnauth_user where svnauth_user.user_id=svnauth_groupuser.user_id and group_id=$gid and svnauth_user.fresh=0 group by user_name";
 	$result_u=mysql_query($sql);
 	$user_array=array();
 	while(($result_u)and($row2=mysql_fetch_array($result_u,MYSQL_BOTH))) {	
@@ -22,7 +22,7 @@ while (($result)and($row= mysql_fetch_array($result, MYSQL_BOTH))) {
 
 }
 
-$query="select svnauth_user.user_name,repository,path,permission from svnauth_permission,svnauth_user where svnauth_permission.user_id=svnauth_user.user_id order by repository,path";
+$query="select svnauth_user.user_name,repository,path,permission from svnauth_permission,svnauth_user where svnauth_permission.user_id=svnauth_user.user_id and svnauth_user.fresh=0 order by repository,path";
 $result = mysql_query($query);
 $i=0;
 $repos='';

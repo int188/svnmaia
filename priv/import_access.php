@@ -98,7 +98,12 @@ if ($handle) {
         	if($buffer != '[groups]')$groupstart=false;
         	//获取节点的库名和path信息
         	if(ereg("^\[(.*)\]$",$buffer,$matches))$buffer=$matches[1];
-        	if(! $groupstart)list($repos,$path)=explode(':',$buffer,2);//如果path是null呢？[/]
+		if(! $groupstart)
+		{
+			list($repos,$path)=explode(':',$buffer,2);//如果path是null呢？[/]
+			if(($repos != '/')and(empty($path)))$path='/';
+			if(strpos($path,':'))echo "<br><b>Warning:</b>$buffer maybe a wrong input in your authz file";
+		}
         	continue;
         }
         if($groupstart)
@@ -120,7 +125,9 @@ if ($handle) {
           if($buffer[0] == '[')
           {
             if(ereg("^\[(.*)\]$",$buffer,$matches))$buffer=$matches[1];
-            list($repos,$path)=explode(':',$buffer,2);//如果path是null呢？[/]
+	    list($repos,$path)=explode(':',$buffer,2);//如果path是null呢？[/]
+	    if(($repos != '/')and(empty($path)))$path='/';
+	    if(strpos($path,':'))echo "<br><b>Warning:</b>$buffer maybe a wrong input in your authz file";
             continue;
           }
           list($group,$permission)=explode('=',$buffer,2); 

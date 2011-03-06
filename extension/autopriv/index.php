@@ -230,6 +230,7 @@ function showexpire(sw)
 <div id='myexpire'>&nbsp;有效期:<input type='radio' name='expire_t' value='none' checked>不设置  <input type='radio' name='expire_t' value='7'>一周 <input type='radio' name='expire_t' value='30'>一个月 <input type='radio' name='expire_t' value='90'>三个月 <input type='radio' name='expire_t' value='other'>指定:<input type=text name='expire_o'  size='3'>天</div>
 <br><input type='radio' name='optype' value='denied'  id='superadmin' onclick='showexpire(0)'><label for='superadmin'>拒绝</label>
 <br><input type='radio' name='optype' value='other' id='tolist' onclick='showexpire(0)'><label for='tolist'>手动处理（进入权限管理系统处理）</label>
+<hr/>
 <br>回执给申请人:<input type=text name='email_back'  size='40'>
 </div>
 <div class='ft'>

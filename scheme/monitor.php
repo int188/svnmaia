@@ -50,6 +50,7 @@ if (mysql_select_db(DBNAME))
 		list($ot,$ver)=explode('r',$ver);
 		if($oldver == $ver)continue;
 		unset($logarr);
+		unset($diffarr);
 		$v1=$oldver+1;
 		exec("{$svn}svn log -v -r${v1}:$ver \"$localurl\"",$logarr);
 		$filestr='';
@@ -62,10 +63,12 @@ if (mysql_select_db(DBNAME))
 				$fn=basename($f);
 				$filestr .= ' '.$f;
 				if($matches[1] == 'M')
-					$logarr[]="查看$fn diff:  "."http://".$_SERVER['SERVER_NAME']."/viewvc/$repos/$f?r1=$oldver&r2=$ver";
+					$diffarr[]="查看$fn diff:  "."http://".$_SERVER['SERVER_NAME']."/viewvc/$repos/$f?r1=$oldver&r2=$ver";
 			}
 		}
+		$tmpstr=implode("\n\r",$diffarr);
 		$body=implode("\n\r",$logarr);
+		$body=$body."\n\r".$tmpstr;
 		$query="update monitor_url set version=$ver where monitor_id=$monitor_id";
 		$result2=mysql_query($query);
 		if($result2)
@@ -75,13 +78,33 @@ if (mysql_select_db(DBNAME))
 			$found=false;			
 			while (($result3)and($userrow= mysql_fetch_array($result3, MYSQL_BOTH))) {
 				$email=$userrow['email'];
-				$user=$userrow['email'];
+				$user=$userrow['user_name'];
 				$email=(empty($email))?($user.$email_ext):$email;
 				$pattern=$userrow['pattern'];
+				if(empty($user))continue;
 				$found=true;
 				if(!empty($pattern))
 				{
 					if(! preg_match("/$pattern/",$filestr))continue;
+					unset($diffarr);
+					foreach($logarr as $k => $v)
+					{
+						if(preg_match("/^[\t\s]+(\w)\s+(.*)/",$v,$matches))
+						{				
+							$f=$matches[2];
+							$fn=basename($f);
+							if(! preg_match("/$pattern/",$fn))
+							{
+								unset($logarr[$k]);			
+								continue;
+							}
+							if($matches[1] == 'M')
+								$diffarr[]="查看$fn diff:  "."http://".$_SERVER['SERVER_NAME']."/viewvc/$repos/$f?r1=$oldver&r2=$ver";
+						}
+					}
+					$tmpstr=implode("\n\r",$diffarr);
+					$body=implode("\n\r",$logarr);
+					$body=$body."\n\r".$tmpstr;
 				}
 				$subject="代码变更 r$ver:$url";	
 				$windid='svn-changed';
